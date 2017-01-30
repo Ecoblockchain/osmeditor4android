@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @see <a href="http://turfjs.org/docs/">Turfjs documentation</a>
  * @since 1.3.0
  */
-class TurfGrids {
+public class TurfGrids {
 
   /**
    * Takes a {@link FeatureCollection} of {@link Point} and a {@link FeatureCollection} of

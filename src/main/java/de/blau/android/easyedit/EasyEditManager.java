@@ -1626,7 +1626,7 @@ public class EasyEditManager {
 			boolean isRelationMember = element.hasParentRelations();
 			boolean allNodesDownloaded = logic.isInDownload((Way)element);
 			
-			if ( allNodesDownloaded) {
+			if (allNodesDownloaded) {
 				new AlertDialog.Builder(main)
 					.setTitle(R.string.delete)
 					.setMessage(isRelationMember ? R.string.deleteway_relation_description : R.string.deleteway_description)

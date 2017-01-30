@@ -88,8 +88,6 @@ public class TagEditorFragment extends BaseFragment implements
 
 	private static final String EXTRA_TAGS = "extraTags";
 
-	private static final String HTTP_PREFIX = "http://";
-
 	private static final String DEBUG_TAG = TagEditorFragment.class.getSimpleName();
 
 	private SavingHelper<LinkedHashMap<String,String>> savingHelper
@@ -852,6 +850,8 @@ public class TagEditorFragment extends BaseFragment implements
 					}
 					if (Tags.isWebsiteKey(key)) {
 						initWebsite(row.valueEdit);
+					} else if (Tags.isSpeedKey(key)) {
+						initMPHSpeed(getActivity(),row.valueEdit,((PropertyEditor)getActivity()).getElement());
 					}
 					if (PropertyEditor.running) {
 						if (row.valueEdit.getText().length() == 0) row.valueEdit.showDropDown();
@@ -1892,10 +1892,10 @@ public class TagEditorFragment extends BaseFragment implements
 	/**
 	 * @param key
 	 * @param value
-	 * @return true is value isn't empty and isn't the HTTP prefix
+	 * @return true is value isn't empty and isn't equal to a suffix or prefix that we pre-filled out
 	 */
 	private boolean saveTag(String key, String value) {
-		return !"".equals(value) && !(Tags.isWebsiteKey(key) && HTTP_PREFIX.equals(value));
+		return !"".equals(value) && !(Tags.isWebsiteKey(key) && Tags.HTTP_PREFIX.trim().equalsIgnoreCase(value)) && (!(Tags.isSpeedKey(key) && Tags.MPH.trim().equalsIgnoreCase(value)));
 	}
 	
 	/**
@@ -1972,8 +1972,20 @@ public class TagEditorFragment extends BaseFragment implements
 	public static void initWebsite(final EditText valueEdit) {
 		valueEdit.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_URI);
 		if (valueEdit.getText().length() == 0) {
-			valueEdit.setText(HTTP_PREFIX);
-			valueEdit.setSelection(HTTP_PREFIX.length());
+			valueEdit.setText(Tags.HTTP_PREFIX);
+			valueEdit.setSelection(Tags.HTTP_PREFIX.length());
+		}
+	}
+	
+	/**
+	 * Add mph to empty EditTexts that are supposed to contain speed and are in relevant country and set input mode
+	 * @param valueEdit
+	 */
+	public static void initMPHSpeed(Context ctx, final EditText valueEdit, OsmElement e) {
+		valueEdit.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_URI);
+		if (valueEdit.getText().length() == 0 && App.getGeoContext(ctx).imperial(e)) { // in the case of multi-select there is no guarantee that this makes sense
+			valueEdit.setText(Tags.MPH);
+			valueEdit.setSelection(0);
 		}
 	}
 }

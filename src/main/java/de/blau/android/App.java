@@ -19,6 +19,7 @@ import de.blau.android.tasks.TaskStorage;
 import de.blau.android.util.MultiHashMap;
 import de.blau.android.util.NotificationCache;
 import de.blau.android.util.rtree.RTree;
+import de.blau.android.util.GeoContext;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -62,6 +63,11 @@ public class App extends android.app.Application {
 	 * Geo index to on device photos
 	 */
 	private static RTree photoIndex;
+	/**
+	 * Various attributes that are regional
+	 */
+	private static GeoContext geoContext = null;  
+	private static final Object geoContextLock = new Object();
 	
 	/**
 	 * Cache of recent notifications for tasks
@@ -172,6 +178,27 @@ public class App extends android.app.Application {
 		}
 	}
 
+	public static void initGeoContext(Context ctx) {
+		synchronized (geoContextLock) {
+			if (geoContext == null) {
+				geoContext = new GeoContext(ctx);
+			}
+		}
+	}
+	
+	public static GeoContext getGeoContext(Context ctx) {
+		synchronized (geoContextLock) {
+			if (geoContext == null) {
+				geoContext = new GeoContext(ctx);
+			}
+			return geoContext;
+		}
+	}
+	
+	public static GeoContext getGeoContext() {
+		return geoContext;
+	}
+	
 	/**
 	 * Returns the current in-memory index, use resetPhotoIndex to initialize/reset
 	 * @return

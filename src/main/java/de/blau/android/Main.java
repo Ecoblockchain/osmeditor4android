@@ -426,6 +426,8 @@ public class Main extends FullScreenAppCompatActivity implements ServiceConnecti
 			}
 		}
 
+		App.initGeoContext(this);
+		
 		int layout = R.layout.main;
 		if (useFullScreen(prefs)) {
 			Log.d(DEBUG_TAG, "using full screen layout");
@@ -635,7 +637,7 @@ public class Main extends FullScreenAppCompatActivity implements ServiceConnecti
 		super.onResume();
 		Log.d(DEBUG_TAG, "onResume");
 		final Logic logic = App.getLogic();
-
+		App.initGeoContext(this);
 		checkPermissions();
 
 		// register received for changes in connectivity

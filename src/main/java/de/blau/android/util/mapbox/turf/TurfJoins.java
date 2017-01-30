@@ -14,7 +14,7 @@ import java.util.List;
  * @see <a href="http://turfjs.org/docs/">Turf documentation</a>
  * @since 1.3.0
  */
-class TurfJoins {
+public class TurfJoins {
 
   /**
    * Takes a {@link Position} and a List of Positions making up a polygon and determines if the

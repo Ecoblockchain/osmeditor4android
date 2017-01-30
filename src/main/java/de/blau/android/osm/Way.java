@@ -386,6 +386,17 @@ public class Way extends OsmElement implements BoundedObject {
 				}
 			}
 		}
+		if (highway != null) { 
+			BoundingBox b = getBounds();
+			boolean imperial = App.getGeoContext().imperial((b.getRight()-b.getLeft())/10E7D, b.getCenterLat());
+			if (imperial) {
+				for (String key:tags.keySet()) {
+					if (Tags.isSpeedKey(key) && !tags.get(key).endsWith(Tags.MPH)) {
+						return true;
+					}
+				}
+			}
+		}
 		return super.calcProblem();
 	}
 	
@@ -407,9 +418,21 @@ public class Way extends OsmElement implements BoundedObject {
 				}
 			}
 			if (isImportant) {
-				wayProblem = !wayProblem.equals("") ? wayProblem +", " :  App.mainActivity.getString(R.string.toast_noname);
+				wayProblem = (!wayProblem.equals("") ? wayProblem +", " : "") +  App.mainActivity.getString(R.string.toast_noname);
 			}
 		}
+		if (highway != null) { 
+			BoundingBox b = getBounds();
+			boolean imperial = App.getGeoContext().imperial((b.getRight()-b.getLeft())/10E7D, b.getCenterLat());
+			if (imperial) {
+				for (String key:tags.keySet()) {
+					if (Tags.isSpeedKey(key) && !tags.get(key).endsWith(Tags.MPH)) {
+						wayProblem = (!"".equals(wayProblem) ? wayProblem + "\n": "") +  App.mainActivity.getString(R.string.toast_imperial_units);
+						break;
+					}
+				}
+			}
+		}		
 		if (!superProblem.equals("")) 
 			return superProblem + (!wayProblem.equals("") ? "\n" + wayProblem : "");
 		else
